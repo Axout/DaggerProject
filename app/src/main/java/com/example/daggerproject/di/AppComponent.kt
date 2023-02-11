@@ -1,7 +1,6 @@
 package com.example.daggerproject.di
 
-import com.example.daggerproject.DatabaseHelper
-import com.example.daggerproject.NetworkUtils
+import com.example.daggerproject.MainActivity
 import dagger.Component
 
 /**
@@ -21,6 +20,10 @@ import dagger.Component
 @Component (modules = [StorageModule::class, NetworkModule::class])
 interface AppComponent {
 
-    fun getDatabaseHelper(): DatabaseHelper
-    fun getNetworkUtils(): NetworkUtils
+    /**
+     * Мы можем научить компонент не возвращать объекты, а самому наполнять Activity требуемыми объектами.
+     * Т.е. мы даем компоненту экземпляр MainActivity, а он смотрит, какие объекты нужны,
+     * создает их и сам помещает в соответствующие поля.
+     */
+    fun injectMainActivity(mainActivity: MainActivity)
 }

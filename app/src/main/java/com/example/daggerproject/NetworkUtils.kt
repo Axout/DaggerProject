@@ -1,4 +1,4 @@
 package com.example.daggerproject
 
-class NetworkUtils {
+class NetworkUtils(private val connectionManager: ConnectionManager) {
 }

@@ -1,6 +1,6 @@
 package com.example.daggerproject.di
 
-import com.example.daggerproject.MainActivity
+import com.example.daggerproject.MainActivityPresenter
 import dagger.Component
 
 /**
@@ -17,7 +17,7 @@ import dagger.Component
  * Ну а если ничего из этого не помогает,
  * то возможно все таки что-то сделано неправильно и даггер ругается не просто так.
  */
-@Component (modules = [StorageModule::class, NetworkModule::class])
+@Component (modules = [StorageModule::class, NetworkModule::class, MainModule::class])
 interface AppComponent {
 
     /**
@@ -25,5 +25,5 @@ interface AppComponent {
      * Т.е. мы даем компоненту экземпляр MainActivity, а он смотрит, какие объекты нужны,
      * создает их и сам помещает в соответствующие поля.
      */
-    fun injectMainActivity(mainActivity: MainActivity)
+    fun getMainActivityPresenter(): MainActivityPresenter
 }

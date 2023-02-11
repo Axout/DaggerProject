@@ -1,6 +1,7 @@
 package com.example.daggerproject.di
 
 import com.example.daggerproject.DatabaseHelper
+import com.example.daggerproject.Repository
 import dagger.Module
 import dagger.Provides
 
@@ -8,6 +9,12 @@ import dagger.Provides
 class StorageModule {
 
     @Provides
-    fun provideDatabaseHelper(): DatabaseHelper = DatabaseHelper()
+    fun provideDatabaseHelper(repository: Repository): DatabaseHelper =
+        DatabaseHelper(repository)
+
+    @Provides
+    fun provideRepository(): Repository {
+        return Repository()
+    }
 
 }

@@ -17,7 +17,7 @@ import dagger.Component
  * Ну а если ничего из этого не помогает,
  * то возможно все таки что-то сделано неправильно и даггер ругается не просто так.
  */
-@Component (modules = [StorageModule::class, NetworkModule::class])
+@Component (modules = [AppModule::class, StorageModule::class, NetworkModule::class])
 interface AppComponent {
 
     /**

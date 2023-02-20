@@ -2,8 +2,12 @@ package com.example.daggerproject
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity @Inject constructor(
+    private val databaseHelper: DatabaseHelper,
+    private val networkUtils: NetworkUtils,
+): AppCompatActivity() {
 
     lateinit var mainActivityPresenter: MainActivityPresenter
 

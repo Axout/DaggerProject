@@ -21,6 +21,16 @@ import dagger.Component
 interface AppComponent {
 
     /**
+     * Кастомизация создания билдера.
+     * Теперь билдер, который даггер создаст для этого компонента, будет реализацией этого интерфейса.
+     */
+    @Component.Builder
+    interface AppCompBuilder {
+        fun buildAppComp(): AppComponent
+        fun appModule(appModule: AppModule): AppCompBuilder
+    }
+
+    /**
      * Мы можем научить компонент не возвращать объекты, а самому наполнять Activity требуемыми объектами.
      * Т.е. мы даем компоненту экземпляр MainActivity, а он смотрит, какие объекты нужны,
      * создает их и сам помещает в соответствующие поля.

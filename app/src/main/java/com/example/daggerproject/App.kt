@@ -12,15 +12,6 @@ class App: Application() {
      * И мы вызываем у него метод buildAppComp, чтобы получить компонент.
      */
     val appComponent: AppComponent = DaggerAppComponent
-        .builder()
-        /*
-         * Соответственно и создавать объект AppModule нам самим больше не надо.
-         * Билдер сам это сделает, конструктор теперь пустой.
-         *
-         * ! В документации указано, что этот способ является более предпочтительным,
-         * чем передача через конструктор модуля.
-         */
-        .networkModule(NetworkModule())
-        .context(this)
-        .buildAppComp()
+        .factory()
+        .create(this, NetworkModule())
 }

@@ -23,22 +23,18 @@ import dagger.Component
 interface AppComponent {
 
     /**
-     * Кастомизация создания билдера.
-     * Теперь билдер, который даггер создаст для этого компонента, будет реализацией этого интерфейса.
+     * С версии 2.22 в даггере появился еще один способ создать компонент.
+     * Вместо билдера с несколькими методами, мы можем использовать один метод с несколькими аргументами.
+     * Для этого используется Factory.
+     *
+     * Внутри компонента нам надо создать интерфейс с аннотацией @Component.Factory.
+     * Имя интерфейса может быть любым. А метод будет только один.
+     * Он должен принимать на вход все @BindsInstance объекты и модули, которые нужны компоненту.
+     * А на выходе он должен возвращать компонент. Т.е. получается билдер, упакованный в один метод.
      */
-    @Component.Builder
-    interface AppCompBuilder {
-        fun buildAppComp(): AppComponent
-
-        /**
-         * Чтобы компоненту передать объект Context через кастомный билдер без участия модуля нужно:
-         * описать в кастомном билдере метод с аннотацией @BindsInstance.
-         * На вход он должен принимать объект, который мы хотим передать компоненту.
-         * А на выходе должен возвращать билдер.
-         */
-        @BindsInstance
-        fun context(context: Context): AppCompBuilder
-        fun networkModule(networkModule: NetworkModule): AppCompBuilder
+    @Component.Factory
+    interface AppCompFactory {
+        fun create(@BindsInstance context: Context, networkModule: NetworkModule): AppComponent
     }
 
     /**

@@ -5,11 +5,16 @@ import android.content.res.Resources
 import dagger.Module
 import dagger.Provides
 
+/**
+ * Теперь Context можно убрать из конструктора AppModule.
+ * У компонента будет доступ к этому объекту напрямую,
+ * и он сможет передать его в Provides методы для получения Resources, например.
+ */
 @Module
-class AppModule(private val context: Context) {
+class AppModule {
 
     @Provides
-    fun getResources(): Resources {
+    fun getResources(context: Context): Resources {
         return context.resources
     }
 
@@ -23,7 +28,7 @@ class AppModule(private val context: Context) {
      * Он сможет его использовать для создания других объектов, даже если они создаются в других модулях.
      */
     @Provides
-    fun getAppContext(): Context {
+    fun getAppContext(context: Context): Context {
         return context
     }
 }

@@ -1,6 +1,8 @@
 package com.example.daggerproject.di
 
+import android.content.Context
 import com.example.daggerproject.MainActivityPresenter
+import dagger.BindsInstance
 import dagger.Component
 
 /**
@@ -27,7 +29,16 @@ interface AppComponent {
     @Component.Builder
     interface AppCompBuilder {
         fun buildAppComp(): AppComponent
-        fun appModule(appModule: AppModule): AppCompBuilder
+
+        /**
+         * Чтобы компоненту передать объект Context через кастомный билдер без участия модуля нужно:
+         * описать в кастомном билдере метод с аннотацией @BindsInstance.
+         * На вход он должен принимать объект, который мы хотим передать компоненту.
+         * А на выходе должен возвращать билдер.
+         */
+        @BindsInstance
+        fun context(context: Context): AppCompBuilder
+        fun networkModule(networkModule: NetworkModule): AppCompBuilder
     }
 
     /**

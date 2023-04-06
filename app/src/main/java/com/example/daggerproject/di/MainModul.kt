@@ -1,5 +1,6 @@
 package com.example.daggerproject.di
 
+import android.app.Activity
 import com.example.daggerproject.DatabaseHelper
 import com.example.daggerproject.MainActivityPresenter
 import com.example.daggerproject.NetworkUtils
@@ -10,7 +11,11 @@ import dagger.Provides
 class MainModule {
 
     @Provides
-    fun provideMainActivityPresenter(databaseHelper: DatabaseHelper, networkUtils: NetworkUtils): MainActivityPresenter {
-        return MainActivityPresenter(databaseHelper, networkUtils)
+    fun provideMainActivityPresenter(
+        databaseHelper: DatabaseHelper,
+        networkUtils: NetworkUtils,
+        activity: Activity
+    ): MainActivityPresenter {
+        return MainActivityPresenter(databaseHelper, networkUtils, activity)
     }
 }

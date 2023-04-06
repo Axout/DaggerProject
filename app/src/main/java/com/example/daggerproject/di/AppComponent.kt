@@ -1,8 +1,10 @@
 package com.example.daggerproject.di
 
+import android.app.Activity
 import com.example.daggerproject.DatabaseHelper
 import com.example.daggerproject.MainActivityPresenter
 import com.example.daggerproject.NetworkUtils
+import dagger.BindsInstance
 import dagger.Component
 import dagger.Subcomponent
 
@@ -26,12 +28,9 @@ interface AppComponent {
     fun getNetworkUtils(): NetworkUtils
 
     /**
-     * Соответственно, из AppComponent мы убираем и MainModule и getMainActivityPresenter.
-     * Они там больше не нужны. AppComponent теперь не должен уметь создавать презентер.
-     * Но AppComponent должен уметь создавать MainComponent.
-     * Для этого мы добавляем метод getMainComponent:
+     * Получаем билдер, чтобы создать сабкомпонент, попросив его у компонента родителя:
      */
-    fun getMainComponent(): MainComponent
+    fun getMainComponentBuilder(): MainComponent.Builder
 }
 
 /**
@@ -61,10 +60,18 @@ interface AppComponent {
 @Subcomponent(modules = [MainModule::class])
 interface MainComponent {
     /**
-     * В интерфейсе мы описываем get метод для получения презентера.
-     * А в списке модулей мы указываем MainModule, чтобы сабкомпонент знал,
-     * как этот презентер создается.
+     * Кастомный билдер для сабкомпонента создается таким же способом, как и билдер для обычного компонента.
+     * Создаем интерфейс с аннотацией @Subcomponent.Builder,
+     * и в нем описываем, какие объекты хотим передать в сабкомпонент.
+     * Я в этом примере добавил в билдер возможность передать Activity,
+     * т.к. оно потребуется сабкомпоненту при создании MainActivityPresenter в MainModule:
      */
+    @Subcomponent.Builder
+    interface Builder {
+        @BindsInstance
+        fun activity(activity: Activity): Builder
+        fun build(): MainComponent
+    }
+
     fun getMainActivityPresenter(): MainActivityPresenter
-    fun getDatabaseHelper(): DatabaseHelper
 }

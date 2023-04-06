@@ -12,10 +12,13 @@ class MainActivity: AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         /**
-         * Теперь в MainActivity мы можем получить MainComponent из AppComponent.
-         * А из MainComponent можем получить презентер:
+         * Мы получаем от компонента билдер и сами создаем сабкомпонент MainComponent.
+         * При этом мы передаем туда все, что нужно сабкомпоненту для создания объектов.
+         * В нашем случае это activity.
          */
-        val mainComponent = (application as App).appComponent.getMainComponent()
+        val mainComponent = (application as App).appComponent.getMainComponentBuilder()
+            .activity(this)
+            .build()
 
         mainActivityPresenter = mainComponent.getMainActivityPresenter()
 

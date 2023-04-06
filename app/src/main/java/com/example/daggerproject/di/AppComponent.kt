@@ -1,8 +1,8 @@
 package com.example.daggerproject.di
 
-import android.content.Context
+import com.example.daggerproject.DatabaseHelper
 import com.example.daggerproject.MainActivityPresenter
-import dagger.BindsInstance
+import com.example.daggerproject.NetworkUtils
 import dagger.Component
 
 /**
@@ -19,28 +19,20 @@ import dagger.Component
  * Ну а если ничего из этого не помогает,
  * то возможно все таки что-то сделано неправильно и даггер ругается не просто так.
  */
-@Component (modules = [AppModule::class, StorageModule::class, NetworkModule::class])
+@Component (modules = [StorageModule::class, NetworkModule::class, MainModule::class])
 interface AppComponent {
+    fun getDatabaseHelper(): DatabaseHelper
+    fun getNetworkUtils(): NetworkUtils
 
     /**
-     * С версии 2.22 в даггере появился еще один способ создать компонент.
-     * Вместо билдера с несколькими методами, мы можем использовать один метод с несколькими аргументами.
-     * Для этого используется Factory.
+     * Все вроде в порядке, но что если нам нужен не только презентер,
+     * но и еще какие-то объекты, специфичные для MainActivity и его дочерних фрагментов.
+     * В этом случае в AppComponent нам надо будет описывать несколько getMain* или injectMain* методов.
+     * А потом будут добавляться еще Activity и для них тоже надо будет создавать методы.
+     * В итоге AppComponent превратится в монстра, который умеет и знает все.
      *
-     * Внутри компонента нам надо создать интерфейс с аннотацией @Component.Factory.
-     * Имя интерфейса может быть любым. А метод будет только один.
-     * Он должен принимать на вход все @BindsInstance объекты и модули, которые нужны компоненту.
-     * А на выходе он должен возвращать компонент. Т.е. получается билдер, упакованный в один метод.
-     */
-    @Component.Factory
-    interface AppCompFactory {
-        fun create(@BindsInstance context: Context, networkModule: NetworkModule): AppComponent
-    }
-
-    /**
-     * Мы можем научить компонент не возвращать объекты, а самому наполнять Activity требуемыми объектами.
-     * Т.е. мы даем компоненту экземпляр MainActivity, а он смотрит, какие объекты нужны,
-     * создает их и сам помещает в соответствующие поля.
+     * Чтобы AppComponent не стал таким, мы можем создать для него сабкомпонент MainComponent.
+     * Туда мы вынесем все, что касается MainActivity.
      */
     fun getMainActivityPresenter(): MainActivityPresenter
 }

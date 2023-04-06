@@ -11,7 +11,13 @@ class MainActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mainActivityPresenter = (application as App).appComponent.getMainActivityPresenter()
+        /**
+         * Теперь в MainActivity мы можем получить MainComponent из AppComponent.
+         * А из MainComponent можем получить презентер:
+         */
+        val mainComponent = (application as App).appComponent.getMainComponent()
+
+        mainActivityPresenter = mainComponent.getMainActivityPresenter()
 
     }
 }

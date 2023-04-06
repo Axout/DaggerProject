@@ -4,6 +4,7 @@ import com.example.daggerproject.DatabaseHelper
 import com.example.daggerproject.MainActivityPresenter
 import com.example.daggerproject.NetworkUtils
 import dagger.Component
+import dagger.Subcomponent
 
 /**
  * Ошибки
@@ -19,20 +20,51 @@ import dagger.Component
  * Ну а если ничего из этого не помогает,
  * то возможно все таки что-то сделано неправильно и даггер ругается не просто так.
  */
-@Component (modules = [StorageModule::class, NetworkModule::class, MainModule::class])
+@Component(modules = [StorageModule::class, NetworkModule::class])
 interface AppComponent {
     fun getDatabaseHelper(): DatabaseHelper
     fun getNetworkUtils(): NetworkUtils
 
     /**
-     * Все вроде в порядке, но что если нам нужен не только презентер,
-     * но и еще какие-то объекты, специфичные для MainActivity и его дочерних фрагментов.
-     * В этом случае в AppComponent нам надо будет описывать несколько getMain* или injectMain* методов.
-     * А потом будут добавляться еще Activity и для них тоже надо будет создавать методы.
-     * В итоге AppComponent превратится в монстра, который умеет и знает все.
-     *
-     * Чтобы AppComponent не стал таким, мы можем создать для него сабкомпонент MainComponent.
-     * Туда мы вынесем все, что касается MainActivity.
+     * Соответственно, из AppComponent мы убираем и MainModule и getMainActivityPresenter.
+     * Они там больше не нужны. AppComponent теперь не должен уметь создавать презентер.
+     * Но AppComponent должен уметь создавать MainComponent.
+     * Для этого мы добавляем метод getMainComponent:
+     */
+    fun getMainComponent(): MainComponent
+}
+
+/**
+ * Преимущества Subcomponent.
+ *
+ * Во-первых - это логическое разделение функционала. Вместо одного компонента, который умеет и знает все,
+ * мы создаем разные компоненты, ответственные за свои области.
+ *
+ * Во-вторых - это более гибкая передача объектов в компоненты.
+ *
+ * В-третьих - это более гибкое время жизни объектов, возвращаемых компонентами.
+ *
+ * Сабкомпонент - это не какая-то часть компонента. Это скорее похоже на расширение компонента.
+ * У сабкомпонента MainComponent есть свои объекты, которые он умеет создавать (MainActivityPresenter).
+ * Но при этом он сможет создать (или использовать для создания своих объектов) любой объект,
+ * доступный в AppComponent.
+ *
+ * А вот AppComponent ничего не знает про MainActivityPresenter и создать его не сможет.
+ *
+ * Интерфейс для сабкомпонента создается точно так же, как и для компонента,
+ * только аннотация используется другая - @Subcomponent.
+ *
+ * Еще важный момент. Заметьте, что в сабкомпоненте MainComponent мы нигде и никак не указывали
+ * какой именно компонент будет создателем (родителем) этого сабкомпонента. Это может быть AppComponent.
+ * А может быть и любой другой компонент. Главное, чтобы он предоставил сабкомпоненту необходимые объекты.
+ */
+@Subcomponent(modules = [MainModule::class])
+interface MainComponent {
+    /**
+     * В интерфейсе мы описываем get метод для получения презентера.
+     * А в списке модулей мы указываем MainModule, чтобы сабкомпонент знал,
+     * как этот презентер создается.
      */
     fun getMainActivityPresenter(): MainActivityPresenter
+    fun getDatabaseHelper(): DatabaseHelper
 }

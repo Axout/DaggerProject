@@ -28,9 +28,9 @@ interface AppComponent {
     fun getNetworkUtils(): NetworkUtils
 
     /**
-     * Получаем билдер, чтобы создать сабкомпонент, попросив его у компонента родителя:
+     * В родительском компоненте описываем метод, который возвращает эту фабрику:
      */
-    fun getMainComponentBuilder(): MainComponent.Builder
+    fun getMainComponentFactory(): MainComponent.Factory
 }
 
 /**
@@ -60,17 +60,12 @@ interface AppComponent {
 @Subcomponent(modules = [MainModule::class])
 interface MainComponent {
     /**
-     * Кастомный билдер для сабкомпонента создается таким же способом, как и билдер для обычного компонента.
-     * Создаем интерфейс с аннотацией @Subcomponent.Builder,
-     * и в нем описываем, какие объекты хотим передать в сабкомпонент.
-     * Я в этом примере добавил в билдер возможность передать Activity,
-     * т.к. оно потребуется сабкомпоненту при создании MainActivityPresenter в MainModule:
+     * Описываем фабрику.
+     * В аргументах метода описываем объекты, которые хотим передавать в сабкомпонент.
      */
-    @Subcomponent.Builder
-    interface Builder {
-        @BindsInstance
-        fun activity(activity: Activity): Builder
-        fun build(): MainComponent
+    @Subcomponent.Factory
+    interface Factory {
+        fun create(@BindsInstance activity: Activity): MainComponent
     }
 
     fun getMainActivityPresenter(): MainActivityPresenter

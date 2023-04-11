@@ -1,9 +1,8 @@
 package com.example.daggerproject.di
 
 import android.app.Activity
-import com.example.daggerproject.DatabaseHelper
+import com.example.daggerproject.MainActivity
 import com.example.daggerproject.MainActivityPresenter
-import com.example.daggerproject.NetworkUtils
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Subcomponent
@@ -22,15 +21,13 @@ import dagger.Subcomponent
  * Ну а если ничего из этого не помогает,
  * то возможно все таки что-то сделано неправильно и даггер ругается не просто так.
  */
-@Component(modules = [StorageModule::class, NetworkModule::class])
+@Component(modules = [AppModule::class, StorageModule::class, NetworkModule::class])
 interface AppComponent {
-    fun getDatabaseHelper(): DatabaseHelper
-    fun getNetworkUtils(): NetworkUtils
-
     /**
-     * В родительском компоненте описываем метод, который возвращает эту фабрику:
+     * Чтобы заинджектить билдер сабкомпонента в Activity, мы в компоненте описываем inject метод.
+     * Мы передаем этому методу экземпляр Activity, и метод инджектит необходимые объекты в этот экземпляр.
      */
-    fun getMainComponentFactory(): MainComponent.Factory
+    fun injectMainActivity(activity: MainActivity)
 }
 
 /**
@@ -59,13 +56,12 @@ interface AppComponent {
  */
 @Subcomponent(modules = [MainModule::class])
 interface MainComponent {
-    /**
-     * Описываем фабрику.
-     * В аргументах метода описываем объекты, которые хотим передавать в сабкомпонент.
-     */
-    @Subcomponent.Factory
-    interface Factory {
-        fun create(@BindsInstance activity: Activity): MainComponent
+
+    @Subcomponent.Builder
+    interface Builder {
+        @BindsInstance
+        fun activity(activity: Activity): Builder
+        fun build(): MainComponent
     }
 
     fun getMainActivityPresenter(): MainActivityPresenter

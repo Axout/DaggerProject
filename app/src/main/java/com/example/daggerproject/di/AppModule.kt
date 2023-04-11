@@ -6,11 +6,10 @@ import dagger.Module
 import dagger.Provides
 
 /**
- * Теперь Context можно убрать из конструктора AppModule.
- * У компонента будет доступ к этому объекту напрямую,
- * и он сможет передать его в Provides методы для получения Resources, например.
+ * Чтобы связать AppComponent и MainComponent нужно в модуле, который используется в AppComponent,
+ * в параметре subcomponents прописать MainComponent:
  */
-@Module
+@Module(subcomponents = [MainComponent::class])
 class AppModule {
 
     @Provides
